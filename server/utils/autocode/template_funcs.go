@@ -112,7 +112,7 @@ func GenerateSearchConditions(fields []*systemReq.AutoCodeField) string {
 
 		var condition string
 
-		if slices.Contains([]string{"enum", "pictures", "picture", "video", "json", "array"}, field.FieldType) {
+		if slices.Contains([]string{"enum", "pictures", "picture", "video", "json", "richtext", "array"}, field.FieldType) {
 			if field.FieldType == "enum" {
 				if field.FieldSearchType == "LIKE" {
 					condition = fmt.Sprintf(`
@@ -137,10 +137,10 @@ func GenerateSearchConditions(fields []*systemReq.AutoCodeField) string {
 		} else if field.FieldSearchType == "BETWEEN" || field.FieldSearchType == "NOT BETWEEN" {
 			if field.FieldType == "time.Time" {
 				condition = fmt.Sprintf(`
-	if info.%sRange != nil && len(info.%sRange) == 2 {
-		db = db.Where("%s %s ? AND ? ", info.%sRange[0], info.%sRange[1])
-	}`,
-					field.FieldName, field.FieldName, field.ColumnName, field.FieldSearchType, field.FieldName, field.FieldName)
+			if len(info.%sRange) == 2 {
+				db = db.Where("%s %s ? AND ? ", info.%sRange[0], info.%sRange[1])
+			}`,
+					field.FieldName, field.ColumnName, field.FieldSearchType, field.FieldName, field.FieldName)
 			} else {
 				condition = fmt.Sprintf(`
 	if info.Start%s != nil && info.End%s != nil {
@@ -677,7 +677,7 @@ func GenerateSearchField(field systemReq.AutoCodeField) string {
 		// 生成范围搜索字段
 		// time 的情况
 		if field.FieldType == "time.Time" {
-			result = fmt.Sprintf("%sRange  []string  `json:\"%sRange\" form:\"%sRange[]\"`",
+			result = fmt.Sprintf("%sRange  []time.Time  `json:\"%sRange\" form:\"%sRange[]\"`",
 				field.FieldName, field.FieldJson, field.FieldJson)
 		} else {
 			startField := fmt.Sprintf("Start%s  *%s  `json:\"start%s\" form:\"start%s\"`",
