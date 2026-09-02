@@ -45,7 +45,20 @@
       />
     </div>
 
-    <div class="ml-2 flex items-center">
+    <div class="ml-2 flex shrink-0 items-center gap-2">
+      <el-tooltip effect="dark" content="查看授权版演示站" placement="bottom">
+        <el-button
+          type="primary"
+          plain
+          :circle="isMobile"
+          class="!ml-0 shrink-0"
+          aria-label="查看授权版演示站"
+          @click="goLicensedDemo"
+        >
+          <el-icon><Monitor /></el-icon>
+          <span v-if="!isMobile" class="ml-1">授权版演示</span>
+        </el-button>
+      </el-tooltip>
       <tools />
       <el-dropdown>
         <div class="flex justify-center items-center h-full w-full">
@@ -104,6 +117,8 @@
   import { fmtTitle } from '@/utils/fmtRouterTitle'
   import gvaAside from '@/view/layout/aside/index.vue'
   import Logo from '@/components/logo/index.vue'
+  import { DEMO_SITES } from '@/config/external-links'
+  import { toDoc } from '@/utils/doc'
 
   const userStore = useUserStore()
   const router = useRouter()
@@ -115,6 +130,9 @@
   })
   const toPerson = () => {
     router.push({ name: 'person' })
+  }
+  const goLicensedDemo = () => {
+    toDoc(DEMO_SITES.licensed.url)
   }
   const matched = computed(() => route.meta.matched)
 
